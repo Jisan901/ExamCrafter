@@ -1,0 +1,34 @@
+{
+  "en": {
+    "class": "Class",
+    "time": "Time",
+    "date": "Date",
+    "set": "Set",
+    "instructions": "Instructions",
+    "subject": "Subject",
+    "emptyQuestion": "[Empty Question]",
+    "empty": "[Empty]",
+    "gapFillingHelp": "(Ensure your text contains blanks like \"_____\" for students to fill)",
+    "pageBreak": "Page Break",
+    "totalPoints": "Total Points",
+    "totalMarks": "Total Marks",
+    "columnA": "Column A",
+    "columnB": "Column B"
+  },
+  "bn": {
+    "class": "শ্রেণি",
+    "time": "সময়",
+    "date": "তারিখ",
+    "set": "সেট",
+    "instructions": "নির্দেশনা",
+    "subject": "বিষয়",
+    "emptyQuestion": "[ফাঁকা প্রশ্ন]",
+    "empty": "[ফাঁকা]",
+    "gapFillingHelp": "(নিশ্চিত করুন যে আপনার টেক্সটে ছাত্রদের পূরণ করার জন্য \"_____\" এর মতো ফাঁকা স্থান রয়েছে)",
+    "pageBreak": "পৃষ্ঠা বিরতি",
+    "totalPoints": "মোট নম্বর",
+    "totalMarks": "পূর্ণমান",
+    "columnA": "কলাম ক",
+    "columnB": "কলাম খ"
+  }
+}

@@ -1,10 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import PreviewArea from './components/PreviewArea';
-import { Question, SchoolInfo, QuestionType, MCQQuestion } from './types';
+import { Question, SchoolInfo, QuestionType, MCQQuestion, ExamDocument } from './types';
 
-export default function App() {
-  const [schoolInfo, setSchoolInfo] = useState<SchoolInfo>({
+function loadDocuments(): ExamDocument[] {
+  const saved = localStorage.getItem('examcraft_docs');
+  if (saved) {
+    try { 
+      return JSON.parse(saved); 
+    } catch (e) {
+      console.error('Failed to parse documents', e);
+    }
+  }
+
+  // Migration from older version
+  const oldInfo = localStorage.getItem('examcraft_schoolInfo');
+  const oldQuestions = localStorage.getItem('examcraft_questions');
+  let migratedInfo = getDefaultSchoolInfo();
+  let migratedQuestions: Question[] = [];
+
+  if (oldInfo) {
+    try { migratedInfo = JSON.parse(oldInfo); } catch (e) {}
+  }
+  if (oldQuestions) {
+    try { migratedQuestions = JSON.parse(oldQuestions); } catch (e) {}
+  }
+
+  const initialDoc: ExamDocument = {
+    id: crypto.randomUUID(),
+    name: 'Version A',
+    schoolInfo: migratedInfo,
+    questions: migratedQuestions,
+    updatedAt: Date.now(),
+  };
+
+  return [initialDoc];
+}
+
+function getDefaultSchoolInfo(): SchoolInfo {
+  return {
     name: 'Springfield High School',
     examName: 'Mid-Term Examination 2026',
     date: '2026-05-15',
@@ -13,10 +47,61 @@ export default function App() {
     instructions: 'Answer all questions. Write clearly and legibly.',
     examSet: 'A',
     language: 'en',
-  });
+    className: '',
+  };
+}
 
-  const [questions, setQuestions] = useState<Question[]>([]);
+export default function App() {
+  const [documents, setDocuments] = useState<ExamDocument[]>(loadDocuments);
+  const [activeDocId, setActiveDocId] = useState<string>(documents[0]?.id || '');
   const [activeTab, setActiveTab] = useState<'info' | 'questions'>('info');
+
+  useEffect(() => {
+    if (documents.length > 0) {
+      localStorage.setItem('examcraft_docs', JSON.stringify(documents));
+    }
+  }, [documents]);
+
+  const activeDoc = documents.find(d => d.id === activeDocId) || documents[0];
+  const schoolInfo = activeDoc?.schoolInfo || getDefaultSchoolInfo();
+  const questions = activeDoc?.questions || [];
+
+  const updateActiveDoc = (updates: Partial<ExamDocument>) => {
+    setDocuments(docs => docs.map(d => d.id === activeDocId ? { ...d, ...updates, updatedAt: Date.now() } : d));
+  };
+
+  const setSchoolInfo = (info: SchoolInfo) => updateActiveDoc({ schoolInfo: info });
+  const setQuestions = (qs: Question[]) => updateActiveDoc({ questions: qs });
+
+  const createNewVersion = () => {
+    const newDoc: ExamDocument = {
+      id: crypto.randomUUID(),
+      name: `Version ${String.fromCharCode(65 + documents.length)}`, // Version B, C, D...
+      schoolInfo: { ...schoolInfo },
+      questions: JSON.parse(JSON.stringify(questions)), // Deep copy questions
+      updatedAt: Date.now(),
+    };
+    setDocuments([...documents, newDoc]);
+    setActiveDocId(newDoc.id);
+  };
+
+  const deleteCurrentVersion = () => {
+    if (documents.length <= 1) return; // Prevent deleting the last version
+    const newDocs = documents.filter(d => d.id !== activeDocId);
+    setDocuments(newDocs);
+    setActiveDocId(newDocs[0].id);
+  };
+
+  const importDocument = (importedData: any) => {
+    const newDoc: ExamDocument = {
+      ...importedData,
+      id: crypto.randomUUID(),
+      name: importedData.name ? `${importedData.name} (Imported)` : 'Imported Version',
+      updatedAt: Date.now()
+    };
+    setDocuments([...documents, newDoc]);
+    setActiveDocId(newDoc.id);
+  };
 
   const handlePrint = () => {
     window.print();
@@ -43,6 +128,13 @@ export default function App() {
       newQuestion = { ...base, type: 'section', instructions: '' };
     } else if (type === 'page_break') {
       newQuestion = { ...base, type: 'page_break' };
+    } else if (type === 'matching') {
+      newQuestion = { ...base, type: 'matching', text: 'Match the items from Column A with Column B:', points: 5, pairs: [
+        { id: crypto.randomUUID(), left: '', right: '' },
+        { id: crypto.randomUUID(), left: '', right: '' },
+        { id: crypto.randomUUID(), left: '', right: '' },
+        { id: crypto.randomUUID(), left: '', right: '' }
+      ] };
     } else {
       newQuestion = { ...base, type: 'gap_filling' };
     }
@@ -133,10 +225,27 @@ export default function App() {
     setQuestions(questions.filter((q) => q.id !== id));
   };
 
-  const totalPoints = questions.reduce((sum, q) => sum + (q.points * (q.itemCount || 1)), 0);
+  const totalPoints = questions.reduce((sum, q) => {
+    if (q.type === 'section' || q.type === 'page_break') return sum;
+    if (q.manualPoints) {
+      if (q.itemCount && q.itemCount > 1 && q.subItems) {
+         return sum + q.subItems.reduce((subSum, sub) => subSum + (sub.points || 0), 0);
+      }
+      return sum + (q.points || 0);
+    }
+    return sum + (q.points * (q.itemCount || 1));
+  }, 0);
+
+  const totalQuestions = questions.filter(q => q.type !== 'section' && q.type !== 'page_break').length;
+  const totalSubItems = questions.reduce((sum, q) => {
+    if (q.type === 'section' || q.type === 'page_break') return sum;
+    return sum + (q.itemCount || 1);
+  }, 0);
+
+  if (!activeDoc) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900 print:block print:min-h-0 print:bg-white">
       <Sidebar
         schoolInfo={schoolInfo}
         setSchoolInfo={setSchoolInfo}
@@ -150,6 +259,15 @@ export default function App() {
         updateMCQOption={updateMCQOption}
         removeQuestion={removeQuestion}
         totalPoints={totalPoints}
+        totalQuestions={totalQuestions}
+        totalSubItems={totalSubItems}
+        documents={documents}
+        activeDocId={activeDocId}
+        setActiveDocId={setActiveDocId}
+        createNewVersion={createNewVersion}
+        deleteCurrentVersion={deleteCurrentVersion}
+        updateDocName={(name) => updateActiveDoc({ name })}
+        importDocument={importDocument}
       />
       <PreviewArea
         schoolInfo={schoolInfo}

@@ -29,28 +29,44 @@ export default function QuestionEditor({
         <Trash2 className="w-4 h-4" />
       </button>
       
-      {/* Question Type Badge */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex justify-between items-center mb-3">
+        {/* Question Type Badge */}
         <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded uppercase border border-slate-200">
           {q.type === 'section' ? 'Section Header' : q.type === 'page_break' ? 'Page Break' : `Q • ${q.type.replace('_', ' ')}`}
         </span>
+
         {q.type !== 'section' && q.type !== 'page_break' && (
-          <div className="flex items-center gap-1 ml-auto mr-6">
+          <div className="flex items-center gap-1 mr-6 bg-slate-50 border border-slate-200 rounded p-1">
+            <span className="text-xs text-slate-500 font-medium px-1">Items:</span>
             <input
               type="number"
-              className="w-10 px-1 py-0.5 text-sm border border-transparent hover:border-slate-200 focus:border-slate-300 rounded text-center bg-slate-50 focus:bg-white outline-none transition-colors"
+              className="w-10 px-1 py-0.5 text-sm border-none bg-transparent outline-none text-center hover:bg-slate-200 rounded transition-colors"
               value={q.itemCount || 1}
               onChange={(e) => updateQuestion(q.id, { itemCount: parseInt(e.target.value) || 1 })}
               title="Number of items"
             />
-            <span className="text-xs text-slate-500 font-medium">x</span>
-            <input
-              type="number"
-              className="w-10 px-1 py-0.5 text-sm border border-transparent hover:border-slate-200 focus:border-slate-300 rounded text-center bg-slate-50 focus:bg-white outline-none transition-colors"
-              value={q.points}
-              onChange={(e) => updateQuestion(q.id, { points: parseInt(e.target.value) || 0 })}
-              title="Points per item"
-            />
+            {(!q.manualPoints) && (
+              <>
+                <span className="text-xs text-slate-500 font-medium px-1 text-slate-300">×</span>
+                <input
+                  type="number"
+                  className="w-10 px-1 py-0.5 text-sm border-none bg-transparent outline-none text-center hover:bg-slate-200 rounded transition-colors"
+                  value={q.points}
+                  onChange={(e) => updateQuestion(q.id, { points: parseInt(e.target.value) || 0 })}
+                  title="Points per item"
+                />
+              </>
+            )}
+            <div className="h-4 w-px bg-slate-300 mx-1"></div>
+            <label className="flex items-center gap-1.5 cursor-pointer px-1" title="Set Points Manually">
+              <input 
+                type="checkbox" 
+                checked={!!q.manualPoints}
+                onChange={(e) => updateQuestion(q.id, { manualPoints: e.target.checked })}
+                className="w-3 h-3 cursor-pointer"
+              />
+              <span className="text-[0.65rem] uppercase font-bold text-slate-500 tracking-wider">Manual Pts</span>
+            </label>
           </div>
         )}
       </div>
@@ -71,6 +87,15 @@ export default function QuestionEditor({
             onChange={(e) => updateQuestion(q.id, { instructions: e.target.value })}
             rows={2}
           />
+          <label className="flex items-center gap-2 mt-2 cursor-pointer">
+             <input
+               type="checkbox"
+               checked={!!(q as SectionHeader).restartNumbering}
+               onChange={(e) => updateQuestion(q.id, { restartNumbering: e.target.checked })}
+               className="cursor-pointer"
+             />
+             <span className="text-xs text-slate-600 font-medium">Restart question numbering from 1</span>
+          </label>
         </>
       ) : q.type === 'page_break' ? (
         <div className="text-sm text-slate-400 italic text-center py-2">
@@ -90,7 +115,24 @@ export default function QuestionEditor({
             <div className="mt-3 space-y-3 border-t border-slate-100 pt-3">
               {q.subItems.map((sub, idx) => (
                 <div key={sub.id} className="pl-3 border-l-2 border-blue-200">
-                  <div className="text-xs font-semibold text-slate-400 mb-1">Item {idx + 1}</div>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-xs font-semibold text-slate-400">Item {idx + 1}</div>
+                    {q.manualPoints && (
+                       <div className="flex items-center gap-1">
+                         <span className="text-xs text-slate-400 font-medium">Pts:</span>
+                         <input 
+                           type="number" 
+                           className="w-12 px-1 py-0.5 text-xs border border-slate-200 rounded outline-none"
+                           value={sub.points === undefined ? q.points : sub.points}
+                           onChange={(e) => {
+                             const newSubItems = [...(q.subItems || [])];
+                             newSubItems[idx] = { ...sub, points: parseInt(e.target.value) || 0 };
+                             updateQuestion(q.id, { subItems: newSubItems });
+                           }}
+                         />
+                       </div>
+                    )}
+                  </div>
                   <textarea
                     className="w-full px-2 py-1.5 border border-transparent hover:border-slate-200 focus:border-slate-300 rounded text-sm resize-none mb-2 bg-slate-50 focus:bg-white outline-none transition-colors"
                     placeholder={q.type === 'gap_filling' ? "Enter text with blanks" : "Enter question text"}
@@ -135,6 +177,66 @@ export default function QuestionEditor({
               ))}
             </div>
           )}
+
+          {q.type === 'matching' && (
+            <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+              <div className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center text-xs font-semibold text-slate-500 mb-1">
+                <span>Column A</span>
+                <span>Column B</span>
+                <span></span>
+              </div>
+              {q.pairs.map((pair, idx) => (
+                <div key={pair.id} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
+                  <input
+                    type="text"
+                    className="px-2 py-1.5 border border-transparent hover:border-slate-200 focus:border-slate-300 rounded text-sm bg-slate-50 focus:bg-white outline-none transition-colors"
+                    placeholder={`Left item ${idx + 1}`}
+                    value={pair.left}
+                    onChange={(e) => {
+                      const newPairs = [...q.pairs];
+                      newPairs[idx] = { ...pair, left: e.target.value };
+                      updateQuestion(q.id, { pairs: newPairs });
+                    }}
+                  />
+                  <input
+                    type="text"
+                    className="px-2 py-1.5 border border-transparent hover:border-slate-200 focus:border-slate-300 rounded text-sm bg-slate-50 focus:bg-white outline-none transition-colors"
+                    placeholder={`Right item ${idx + 1}`}
+                    value={pair.right}
+                    onChange={(e) => {
+                      const newPairs = [...q.pairs];
+                      newPairs[idx] = { ...pair, right: e.target.value };
+                      updateQuestion(q.id, { pairs: newPairs });
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (q.pairs.length > 2) {
+                        const newPairs = q.pairs.filter((_, i) => i !== idx);
+                        updateQuestion(q.id, { pairs: newPairs });
+                      }
+                    }}
+                    disabled={q.pairs.length <= 2}
+                    className="p-1 text-slate-400 hover:text-red-500 disabled:opacity-30 disabled:hover:text-slate-400 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+              <div className="flex justify-center mt-2">
+                <button
+                  onClick={() => {
+                    updateQuestion(q.id, {
+                      pairs: [...q.pairs, { id: crypto.randomUUID(), left: '', right: '' }]
+                    });
+                  }}
+                  className="text-xs text-blue-600 hover:text-blue-800 font-medium py-1 px-3 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                >
+                  + Add Pair
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -149,6 +251,17 @@ export default function QuestionEditor({
             min={1}
             max={20}
           />
+        </div>
+      )}
+      {q.itemCount === 1 && q.manualPoints && q.type !== 'section' && q.type !== 'page_break' && (
+        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+           <label className="text-xs text-slate-600 font-bold uppercase">Manual Total Points:</label>
+           <input 
+             type="number"
+             className="w-16 px-2 py-1 border border-slate-200 rounded text-sm outline-none focus:border-blue-400"
+             value={q.points}
+             onChange={(e) => updateQuestion(q.id, { points: parseInt(e.target.value) || 0 })}
+           />
         </div>
       )}
     </div>

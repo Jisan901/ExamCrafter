@@ -64,26 +64,41 @@ export default function SettingsTab({ schoolInfo, setSchoolInfo }: SettingsTabPr
             value={schoolInfo.language}
             onChange={(e) => setSchoolInfo({ ...schoolInfo, language: e.target.value })}
           >
-            <option value="en">English (LTR)</option>
-            <option value="es">Spanish (LTR)</option>
-            <option value="fr">French (LTR)</option>
-            <option value="ar">Arabic (RTL)</option>
-            <option value="he">Hebrew (RTL)</option>
-            <option value="bn">Bengali (LTR)</option>
-            <option value="hi">Hindi (LTR)</option>
+            <option value="en">English</option>
+            <option value="bn">Bengali</option>
           </select>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Marks</label>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Class / Grade</label>
           <input
-            type="number"
+            type="text"
             className="w-full px-2 py-1.5 border border-transparent hover:border-slate-200 hover:bg-[#fafafa] focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded text-sm bg-slate-50 transition-colors outline-none"
-            value={schoolInfo.totalMarks}
-            onChange={(e) => setSchoolInfo({ ...schoolInfo, totalMarks: parseInt(e.target.value) || 0 })}
+            value={schoolInfo.className || ''}
+            onChange={(e) => setSchoolInfo({ ...schoolInfo, className: e.target.value })}
+            placeholder="e.g. 10, IX, etc."
           />
         </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Subject</label>
+          <input
+            type="text"
+            className="w-full px-2 py-1.5 border border-transparent hover:border-slate-200 hover:bg-[#fafafa] focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded text-sm bg-slate-50 transition-colors outline-none"
+            value={schoolInfo.subject || ''}
+            onChange={(e) => setSchoolInfo({ ...schoolInfo, subject: e.target.value })}
+            placeholder="e.g. Mathematics"
+          />
+        </div>
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Marks</label>
+        <input
+          type="number"
+          className="w-full px-2 py-1.5 border border-transparent hover:border-slate-200 hover:bg-[#fafafa] focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded text-sm bg-slate-50 transition-colors outline-none"
+          value={schoolInfo.totalMarks}
+          onChange={(e) => setSchoolInfo({ ...schoolInfo, totalMarks: parseInt(e.target.value) || 0 })}
+        />
       </div>
       <div>
         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Instructions</label>
