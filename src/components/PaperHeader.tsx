@@ -23,7 +23,7 @@ export default function PaperHeader({ schoolInfo }: PaperHeaderProps) {
           <span>{langConf.subject}: {schoolInfo.subject || '________________'}</span>
           <span>{langConf.totalMarks}: {schoolInfo.totalMarks ? formatNumber(schoolInfo.totalMarks, schoolInfo.language) : '________________'}</span>
           <span>{langConf.time}: {schoolInfo.time || '________________'}</span>
-          <span>{langConf.date}: {schoolInfo.date || '________________'}</span>
+          {schoolInfo.date ? <span>{langConf.date}: {schoolInfo.date}</span> : null}
         </div>
         {schoolInfo.examSet && (
           <div className="mt-2 text-[0.85em] font-bold text-slate-900">

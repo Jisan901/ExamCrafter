@@ -50,7 +50,6 @@ export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQ
       <div className="flex justify-between items-start mb-2">
         <pre className="font-semibold text-[1em] text-slate-900 flex-1 whitespace-pre-wrap font-sans">
           {currentNum && `${formatNumber(currentNum, language)}.`} {q.text || <span className="text-slate-400 italic font-normal">{langConf.emptyQuestion}</span>}
-          {q.itemCount === 1 && q.type === 'gap_filling' && <span className="border-b border-dashed border-slate-500 inline-block w-20 ml-2"></span>}
         </pre>
         <span className="text-[0.85em] font-bold ml-3 whitespace-nowrap text-slate-900">
           {displayPoints}
@@ -65,7 +64,6 @@ export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQ
                 <pre className="text-[0.95em] text-slate-800 mb-2 whitespace-pre-wrap font-sans">
                   <span className="font-medium mr-2">{formatListLetter(idx, language)})</span>
                   {sub.text || <span className="text-slate-400 italic font-normal">{langConf.empty}</span>}
-                  {q.type === 'gap_filling' && <span className="border-b border-dashed border-slate-500 inline-block w-20 ml-2"></span>}
                 </pre>
                 {q.manualPoints && sub.points !== undefined && (
                   <span className="text-[0.85em] font-bold ml-2 text-slate-600">[{formatNumber(sub.points, language)}]</span>
