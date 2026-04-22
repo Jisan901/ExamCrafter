@@ -16,7 +16,14 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
   const langConf = (langData as any)[schoolInfo.language] || langData.en;
   return (
     <div className="flex-1 overflow-y-auto p-10 bg-slate-100 print:p-0 print:bg-white flex justify-center print:block print:overflow-visible" dir={['ar', 'he'].includes(schoolInfo.language) ? 'rtl' : 'ltr'}>
-      <div className="bg-white w-full max-w-[210mm] min-h-[297mm] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded flex flex-col p-10 print:shadow-none print:rounded-none print:max-w-none print:p-0 print:min-h-0 print:block">
+      <div 
+        className="preview-container bg-white w-full max-w-[210mm] min-h-[297mm] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded flex flex-col p-10 print:shadow-none print:rounded-none print:max-w-none print:p-0 print:min-h-0 print:block"
+        style={{ 
+          fontSize: `${(schoolInfo.fontSizeFactor || 1)}rem`,
+          '--fw-factor': schoolInfo.fontWeightFactor || 1,
+          '--sp-factor': schoolInfo.spacingFactor || 1
+        } as React.CSSProperties}
+      >
         
         {/* Paper Header */}
         <PaperHeader schoolInfo={schoolInfo} />

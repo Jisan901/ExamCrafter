@@ -1,35 +1,60 @@
-import { Trash2 } from 'lucide-react';
+import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { Question, SectionHeader } from '../types';
 
 interface QuestionEditorProps {
-  key?: string;
   q: Question;
+  index: number;
+  isFirst: boolean;
+  isLast: boolean;
   updateQuestion: (id: string, updates: Partial<Question>) => void;
   updateSubItem: (qId: string, subId: string, text: string) => void;
   updateSubItemOption: (qId: string, subId: string, optIndex: number, value: string) => void;
   updateMCQOption: (id: string, index: number, value: string) => void;
   removeQuestion: (id: string) => void;
+  moveQuestion: (id: string, direction: 'up' | 'down') => void;
 }
 
 export default function QuestionEditor({
   q,
+  index,
+  isFirst,
+  isLast,
   updateQuestion,
   updateSubItem,
   updateSubItemOption,
   updateMCQOption,
-  removeQuestion
+  removeQuestion,
+  moveQuestion
 }: QuestionEditorProps) {
   return (
     <div className="p-4 bg-white border border-slate-200 rounded-lg shadow-sm relative group">
-      <button
-        onClick={() => removeQuestion(q.id)}
-        className="absolute top-2 right-2 p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-        title="Remove Question"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
+      <div className="absolute top-2 right-2 flex items-center gap-1">
+        <button
+          onClick={() => moveQuestion(q.id, 'up')}
+          disabled={isFirst}
+          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:bg-transparent"
+          title="Move Up"
+        >
+          <ChevronUp className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => moveQuestion(q.id, 'down')}
+          disabled={isLast}
+          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors disabled:opacity-30 disabled:hover:text-slate-400 disabled:hover:bg-transparent"
+          title="Move Down"
+        >
+          <ChevronDown className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => removeQuestion(q.id)}
+          className="p-1.5 ml-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+          title="Remove Question"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
       
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-3 pt-1">
         {/* Question Type Badge */}
         <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded uppercase border border-slate-200">
           {q.type === 'section' ? 'Section Header' : q.type === 'page_break' ? 'Page Break' : `Q • ${q.type.replace('_', ' ')}`}

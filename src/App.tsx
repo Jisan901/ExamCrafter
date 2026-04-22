@@ -40,6 +40,7 @@ function loadDocuments(): ExamDocument[] {
 function getDefaultSchoolInfo(): SchoolInfo {
   return {
     name: 'Springfield High School',
+    address: '',
     examName: 'Mid-Term Examination 2026',
     date: '2026-05-15',
     time: '2 Hours',
@@ -55,6 +56,7 @@ export default function App() {
   const [documents, setDocuments] = useState<ExamDocument[]>(loadDocuments);
   const [activeDocId, setActiveDocId] = useState<string>(documents[0]?.id || '');
   const [activeTab, setActiveTab] = useState<'info' | 'questions'>('info');
+  const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
     if (documents.length > 0) {
@@ -225,6 +227,24 @@ export default function App() {
     setQuestions(questions.filter((q) => q.id !== id));
   };
 
+  const clearQuestions = () => {
+    if (window.confirm('Are you sure you want to clear all questions from this version? This cannot be undone.')) {
+      setQuestions([]);
+    }
+  };
+
+  const moveQuestion = (id: string, direction: 'up' | 'down') => {
+    const idx = questions.findIndex(q => q.id === id);
+    if (idx < 0) return;
+    const newQuestions = [...questions];
+    if (direction === 'up' && idx > 0) {
+      [newQuestions[idx], newQuestions[idx - 1]] = [newQuestions[idx - 1], newQuestions[idx]];
+    } else if (direction === 'down' && idx < newQuestions.length - 1) {
+      [newQuestions[idx], newQuestions[idx + 1]] = [newQuestions[idx + 1], newQuestions[idx]];
+    }
+    setQuestions(newQuestions);
+  };
+
   const totalPoints = questions.reduce((sum, q) => {
     if (q.type === 'section' || q.type === 'page_break') return sum;
     if (q.manualPoints) {
@@ -258,6 +278,8 @@ export default function App() {
         updateSubItemOption={updateSubItemOption}
         updateMCQOption={updateMCQOption}
         removeQuestion={removeQuestion}
+        clearQuestions={clearQuestions}
+        moveQuestion={moveQuestion}
         totalPoints={totalPoints}
         totalQuestions={totalQuestions}
         totalSubItems={totalSubItems}
@@ -268,13 +290,17 @@ export default function App() {
         deleteCurrentVersion={deleteCurrentVersion}
         updateDocName={(name) => updateActiveDoc({ name })}
         importDocument={importDocument}
+        showPreview={showPreview}
+        setShowPreview={setShowPreview}
       />
-      <PreviewArea
-        schoolInfo={schoolInfo}
-        questions={questions}
-        totalPoints={totalPoints}
-        handlePrint={handlePrint}
-      />
+      {showPreview && (
+        <PreviewArea
+          schoolInfo={schoolInfo}
+          questions={questions}
+          totalPoints={totalPoints}
+          handlePrint={handlePrint}
+        />
+      )}
     </div>
   );
 }

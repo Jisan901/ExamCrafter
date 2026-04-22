@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
 
 @media print {
   html, body, #root {
@@ -17,4 +22,45 @@
     print-color-adjust: exact;
     background-color: white !important;
   }
+}
+
+.preview-container {
+  font-family: var(--font-sans);
+  font-weight: calc(400 * var(--fw-factor, 1));
+}
+
+.preview-container .font-normal { --base-weight: 400; }
+.preview-container .font-medium { --base-weight: 500; }
+.preview-container .font-semibold { --base-weight: 600; }
+.preview-container .font-bold { --base-weight: 700; }
+
+.preview-container .font-normal,
+.preview-container .font-medium,
+.preview-container .font-semibold,
+.preview-container .font-bold {
+  font-weight: calc(var(--base-weight) * var(--fw-factor, 1)) !important;
+}
+
+/* Dynamic Spacing */
+.preview-container .mb-6 { margin-bottom: calc(1.5rem * var(--sp-factor, 1)) !important; }
+.preview-container .mb-4 { margin-bottom: calc(1rem * var(--sp-factor, 1)) !important; }
+.preview-container .mb-3 { margin-bottom: calc(0.75rem * var(--sp-factor, 1)) !important; }
+.preview-container .mt-8 { margin-top: calc(2rem * var(--sp-factor, 1)) !important; }
+.preview-container .mt-4 { margin-top: calc(1rem * var(--sp-factor, 1)) !important; }
+.preview-container .mt-3 { margin-top: calc(0.75rem * var(--sp-factor, 1)) !important; }
+.preview-container .my-12 { 
+  margin-top: calc(3rem * var(--sp-factor, 1)) !important; 
+  margin-bottom: calc(3rem * var(--sp-factor, 1)) !important; 
+}
+.preview-container .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: calc(1.5rem * var(--sp-factor, 1)) !important;
+}
+.preview-container .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: calc(1rem * var(--sp-factor, 1)) !important;
+}
+.preview-container .gap-y-2 {
+  row-gap: calc(0.5rem * var(--sp-factor, 1)) !important;
+}
+.preview-container .h-4 { 
+  height: calc(1rem * var(--sp-factor, 1)) !important; 
 }

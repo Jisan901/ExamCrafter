@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Question, SchoolInfo, QuestionType, ExamDocument } from '../types';
 import SettingsTab from './SettingsTab';
 import QuestionEditor from './QuestionEditor';
@@ -17,6 +18,8 @@ interface SidebarProps {
   updateSubItemOption: (qId: string, subId: string, optIndex: number, value: string) => void;
   updateMCQOption: (id: string, index: number, value: string) => void;
   removeQuestion: (id: string) => void;
+  clearQuestions: () => void;
+  moveQuestion: (id: string, direction: 'up' | 'down') => void;
   totalPoints: number;
   totalQuestions: number;
   totalSubItems: number;
@@ -27,6 +30,8 @@ interface SidebarProps {
   deleteCurrentVersion: () => void;
   updateDocName: (name: string) => void;
   importDocument: (doc: any) => void;
+  showPreview: boolean;
+  setShowPreview: (show: boolean) => void;
 }
 
 export default function Sidebar({
@@ -41,6 +46,8 @@ export default function Sidebar({
   updateSubItemOption,
   updateMCQOption,
   removeQuestion,
+  clearQuestions,
+  moveQuestion,
   totalPoints,
   totalQuestions,
   totalSubItems,
@@ -50,7 +57,9 @@ export default function Sidebar({
   createNewVersion,
   deleteCurrentVersion,
   updateDocName,
-  importDocument
+  importDocument,
+  showPreview,
+  setShowPreview
 }: SidebarProps) {
   const langConf = (langData as any)[schoolInfo.language] || langData.en;
   const activeDoc = documents.find(d => d.id === activeDocId) || documents[0];
@@ -90,11 +99,20 @@ export default function Sidebar({
   };
 
   return (
-    <div className="w-[280px] bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0 print:hidden z-10">
+    <div className={`${showPreview ? 'w-[280px]' : 'flex-1 max-w-4xl mx-auto border-l'} bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0 print:hidden z-10 transition-all duration-300`}>
       <div className="p-6 pb-4">
-        <div className="text-xl font-extrabold text-blue-600 mb-6 flex items-center gap-2">
-          <span className="bg-blue-600 text-white rounded w-7 h-7 flex items-center justify-center text-sm">Q</span>
-          ExamBuilder
+        <div className="flex justify-between items-center mb-6">
+          <div className="text-xl font-extrabold text-blue-600 flex items-center gap-2">
+            <span className="bg-blue-600 text-white rounded w-7 h-7 flex items-center justify-center text-sm">Q</span>
+            ExamBuilder
+          </div>
+          <button 
+            onClick={() => setShowPreview(!showPreview)} 
+            className="text-slate-500 hover:text-blue-600 transition-colors p-1.5 hover:bg-blue-50 rounded-md"
+            title={showPreview ? "Hide Preview" : "Show Preview"}
+          >
+            {showPreview ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+          </button>
         </div>
 
         <div className="mb-6 relative">
@@ -245,15 +263,27 @@ export default function Sidebar({
             </div>
 
             <div className="space-y-4">
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">Your Questions</p>
+                {questions.length > 0 && (
+                  <button onClick={clearQuestions} className="text-xs text-red-600 font-medium hover:underline">
+                    Clear All
+                  </button>
+                )}
+              </div>
               {questions.map((q, index) => (
                 <QuestionEditor
                   key={q.id}
                   q={q}
+                  index={index}
+                  isFirst={index === 0}
+                  isLast={index === questions.length - 1}
                   updateQuestion={updateQuestion}
                   updateSubItem={updateSubItem}
                   updateSubItemOption={updateSubItemOption}
                   updateMCQOption={updateMCQOption}
                   removeQuestion={removeQuestion}
+                  moveQuestion={moveQuestion}
                 />
               ))}
               {questions.length === 0 && (

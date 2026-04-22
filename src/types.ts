@@ -61,8 +61,9 @@ export type Question = MCQQuestion | SubjectiveQuestion | ShortAnswerQuestion | 
 
 export interface SchoolInfo {
   name: string;
+  address?: string;
   examName: string;
-  date: string;
+  date?: string;
   time: string;
   totalMarks: number;
   instructions: string;
@@ -70,6 +71,9 @@ export interface SchoolInfo {
   language: string;
   className?: string;
   subject?: string;
+  fontSizeFactor?: number;
+  fontWeightFactor?: number;
+  spacingFactor?: number;
 }
 
 export interface ExamDocument {
