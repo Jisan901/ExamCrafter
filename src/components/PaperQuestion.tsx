@@ -28,7 +28,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en', paperFor
     return (
       <div 
         className="my-12 border-b-2 border-dashed border-slate-300 print:border-none print:my-0 relative" 
-        style={{ breakBefore: paperFormat === 'A5' ? 'column' : 'page', pageBreakBefore: 'always', WebkitColumnBreakBefore: 'always' } as React.CSSProperties}
+        style={{ breakBefore: 'page', pageBreakBefore: 'always'} as React.CSSProperties}
       >
         <span className="absolute right-0 top-[-10px] bg-white text-slate-400 text-[0.75em] px-2 print:hidden">{langConf.pageBreak}</span>
       </div>
