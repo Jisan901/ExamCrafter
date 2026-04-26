@@ -9,6 +9,17 @@ export default function SettingsTab({ schoolInfo, setSchoolInfo }: SettingsTabPr
   return (
     <div className="space-y-4">
       <div>
+        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Paper Format</label>
+        <select
+          className="w-full px-2 py-1.5 border border-transparent hover:border-slate-200 hover:bg-[#fafafa] focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-blue-100 rounded text-sm bg-slate-50 transition-colors outline-none"
+          value={schoolInfo.paperFormat || 'A4'}
+          onChange={(e) => setSchoolInfo({ ...schoolInfo, paperFormat: e.target.value as 'A4' | 'A5' })}
+        >
+          <option value="A4">A4 (Portrait)</option>
+          <option value="A5">A5 (2-up on A4 Landscape)</option>
+        </select>
+      </div>
+      <div>
         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">School Name</label>
         <input
           type="text"

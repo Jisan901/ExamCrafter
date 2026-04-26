@@ -74,6 +74,7 @@ export interface SchoolInfo {
   fontSizeFactor?: number;
   fontWeightFactor?: number;
   spacingFactor?: number;
+  paperFormat?: 'A4' | 'A5';
 }
 
 export interface ExamDocument {

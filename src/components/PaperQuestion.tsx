@@ -7,14 +7,15 @@ interface PaperQuestionProps {
   q: Question;
   currentNum?: number;
   language?: string;
+  paperFormat?: 'A4' | 'A5';
 }
 
-export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQuestionProps) {
+export default function PaperQuestion({ q, currentNum, language = 'en', paperFormat = 'A4' }: PaperQuestionProps) {
   const langConf = (langData as any)[language] || langData.en;
   if (q.type === 'section') {
     const section = q as SectionHeader;
     return (
-      <div className="mt-8 mb-4 border-b-2 border-slate-200 pb-2">
+      <div className="mt-8 mb-4 border-b-2 border-slate-200 pb-2 break-inside-avoid print:break-inside-avoid">
         <h3 className="text-[1.125em] font-bold uppercase text-slate-900">{section.text}</h3>
         {section.instructions && (
           <p className="text-[0.9em] text-slate-700 italic mt-1">{section.instructions}</p>
@@ -25,7 +26,10 @@ export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQ
 
   if (q.type === 'page_break') {
     return (
-      <div className="print:break-before-page my-12 border-b-2 border-dashed border-slate-300 print:border-none print:my-0 relative">
+      <div 
+        className="my-12 border-b-2 border-dashed border-slate-300 print:border-none print:my-0 relative" 
+        style={{ breakBefore: paperFormat === 'A5' ? 'column' : 'page', pageBreakBefore: 'always', WebkitColumnBreakBefore: 'always' } as React.CSSProperties}
+      >
         <span className="absolute right-0 top-[-10px] bg-white text-slate-400 text-[0.75em] px-2 print:hidden">{langConf.pageBreak}</span>
       </div>
     );
@@ -46,7 +50,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQ
   }
 
   return (
-    <div className={`mb-6 relative ${q.itemCount && q.itemCount > 1 ? '' : 'print:break-inside-avoid'}`}>
+    <div className={`mb-6 relative break-inside-avoid print:break-inside-avoid`}>
       <div className="flex justify-between items-start mb-2">
         <pre className="font-semibold text-[1em] text-slate-900 flex-1 whitespace-pre-wrap font-sans">
           {currentNum && `${formatNumber(currentNum, language)}.`} {q.text || <span className="text-slate-400 italic font-normal">{langConf.emptyQuestion}</span>}
@@ -59,7 +63,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en' }: PaperQ
       {q.itemCount && q.itemCount > 1 && q.subItems ? (
         <div className="mt-4 space-y-4 ml-5">
           {q.subItems.map((sub, idx) => (
-            <div key={sub.id} className="mb-3 print:break-inside-avoid">
+            <div key={sub.id} className="mb-3 break-inside-avoid print:break-inside-avoid">
               <div className="flex justify-between items-start">
                 <pre className="text-[0.95em] text-slate-800 mb-2 whitespace-pre-wrap font-sans">
                   <span className="font-medium mr-2">{formatListLetter(idx, language)})</span>
