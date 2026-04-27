@@ -21,15 +21,15 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
       {isA5 ? (
         <style dangerouslySetInnerHTML={{__html: `
           @media print {
-            @page { size: A4 landscape; margin: 10mm; }
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .preview-container { padding: 0 !important; max-width: none !important; box-shadow: none !important; }
+            @page { size: A4 landscape; margin: 0; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; }
+            .preview-container { box-shadow: none !important; }
           }
         `}} />
       ) : (
         <style dangerouslySetInnerHTML={{__html: `
           @media print {
-            @page { size: A4 portrait; margin: 15mm; }
+            @page { size: A4 portrait; margin: ${15 * (schoolInfo.paperPaddingFactor || 1)}mm; }
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .preview-container { padding: 0 !important; max-width: none !important; box-shadow: none !important; }
           }
@@ -39,7 +39,7 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
       <div 
         className={`preview-container bg-white w-full shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none print:flex ${
           isA5 
-            ? 'max-w-[210mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm] flex flex-col print:p-[10mm]'
+            ? 'max-w-[210mm] print:w-[148.5mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm] flex flex-col'
             : 'max-w-[210mm] min-h-[297mm] flex flex-col'
         }`}
         style={{ 
@@ -83,7 +83,7 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
 
       {isA5 && (
         <div 
-          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:flex max-w-[148.5mm] min-h-[210mm] flex-col mt-0 !ml-[15mm]"
+          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:flex w-full print:w-[148.5mm] max-w-[148.5mm] min-h-[210mm] flex-col mt-0"
           style={{ 
             fontSize: `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)`,
             padding: `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})`,
