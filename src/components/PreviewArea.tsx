@@ -40,10 +40,10 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
       )}
 
       <div 
-        className={`preview-container bg-white w-full shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none print:flex ${
+        className={`preview-container bg-white w-full shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none print:block block ${
           isA5 
-            ? 'max-w-[210mm] print:w-[148.5mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm] flex flex-col'
-            : 'max-w-[210mm] min-h-[297mm] flex flex-col'
+            ? 'max-w-[210mm] print:w-[148.5mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm]'
+            : 'max-w-[210mm] min-h-[297mm]'
         }`}
         style={{ 
           fontSize: isA5 ? `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)` : `${(schoolInfo.fontSizeFactor || 1)}rem`,
@@ -87,7 +87,7 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
 
       {isA5 && (
         <div 
-          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:flex w-full print:w-[148.5mm] max-w-[148.5mm] min-h-[210mm] flex-col mt-0"
+          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:block w-full print:w-[148.5mm] max-w-[148.5mm] min-h-[210mm] block mt-0"
           style={{ 
             fontSize: `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)`,
             padding: `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})`,
