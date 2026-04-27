@@ -73,7 +73,9 @@ export interface SchoolInfo {
   subject?: string;
   fontSizeFactor?: number;
   fontWeightFactor?: number;
-  spacingFactor?: number;
+  spacingFactor?: number; // Kept for backwards compatibility / internal use, or rename in UI
+  paperPaddingFactor?: number;
+  questionMarginFactor?: number;
   paperFormat?: 'A4' | 'A5';
 }
 

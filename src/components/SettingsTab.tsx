@@ -172,13 +172,13 @@ export default function SettingsTab({ schoolInfo, setSchoolInfo }: SettingsTabPr
       </div>
       <div>
         <label className="flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-          <span>Spacing (Factor)</span>
+          <span>Global Spacing (Factor)</span>
           <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{schoolInfo.spacingFactor || 1}x</span>
         </label>
         <input
           type="range"
           min="0.5"
-          max="2.5"
+          max="3.0"
           step="0.1"
           className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
           value={schoolInfo.spacingFactor || 1}
@@ -187,7 +187,47 @@ export default function SettingsTab({ schoolInfo, setSchoolInfo }: SettingsTabPr
         <div className="flex justify-between text-[0.65rem] text-slate-400 mt-1 font-medium">
           <span>Compact (0.5x)</span>
           <span>Normal (1x)</span>
-          <span>Spacious (2.5x)</span>
+          <span>Spacious (3.0x)</span>
+        </div>
+      </div>
+      <div>
+        <label className="flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <span>Question Margin (Factor)</span>
+          <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{schoolInfo.questionMarginFactor || 1}x</span>
+        </label>
+        <input
+          type="range"
+          min="0.1"
+          max="4.0"
+          step="0.1"
+          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          value={schoolInfo.questionMarginFactor || 1}
+          onChange={(e) => setSchoolInfo({ ...schoolInfo, questionMarginFactor: parseFloat(e.target.value) })}
+        />
+        <div className="flex justify-between text-[0.65rem] text-slate-400 mt-1 font-medium">
+          <span>Tight (0.1x)</span>
+          <span>Normal (1x)</span>
+          <span>Wide (4.0x)</span>
+        </div>
+      </div>
+      <div>
+        <label className="flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <span>Paper Padding (Factor)</span>
+          <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{schoolInfo.paperPaddingFactor || 1}x</span>
+        </label>
+        <input
+          type="range"
+          min="0.1"
+          max="3.0"
+          step="0.1"
+          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          value={schoolInfo.paperPaddingFactor || 1}
+          onChange={(e) => setSchoolInfo({ ...schoolInfo, paperPaddingFactor: parseFloat(e.target.value) })}
+        />
+        <div className="flex justify-between text-[0.65rem] text-slate-400 mt-1 font-medium">
+          <span>None (0.1x)</span>
+          <span>Normal (1x)</span>
+          <span>Large (3.0x)</span>
         </div>
       </div>
     </div>

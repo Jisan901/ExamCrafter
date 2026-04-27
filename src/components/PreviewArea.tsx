@@ -39,13 +39,15 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
       <div 
         className={`preview-container bg-white w-full shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none print:flex ${
           isA5 
-            ? 'max-w-[210mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm] flex flex-col p-10 print:p-[10mm]'
-            : 'max-w-[210mm] min-h-[297mm] flex flex-col p-10'
+            ? 'max-w-[210mm] print:max-w-[148.5mm] min-h-[297mm] print:min-h-[210mm] flex flex-col print:p-[10mm]'
+            : 'max-w-[210mm] min-h-[297mm] flex flex-col'
         }`}
         style={{ 
           fontSize: isA5 ? `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)` : `${(schoolInfo.fontSizeFactor || 1)}rem`,
+          padding: isA5 ? `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})` : `calc(2.5rem * ${schoolInfo.paperPaddingFactor || 1})`,
           '--fw-factor': schoolInfo.fontWeightFactor || 1,
-          '--sp-factor': schoolInfo.spacingFactor || 1
+          '--sp-factor': schoolInfo.spacingFactor || 1,
+          '--qm-factor': schoolInfo.questionMarginFactor || 1
         } as React.CSSProperties}
       >
         
@@ -81,11 +83,13 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
 
       {isA5 && (
         <div 
-          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:flex max-w-[148.5mm] min-h-[210mm] flex-col p-[10mm] mt-0 !ml-[15mm]"
+          className="preview-container bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] rounded print:rounded-none hidden print:flex max-w-[148.5mm] min-h-[210mm] flex-col mt-0 !ml-[15mm]"
           style={{ 
             fontSize: `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)`,
+            padding: `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})`,
             '--fw-factor': schoolInfo.fontWeightFactor || 1,
             '--sp-factor': schoolInfo.spacingFactor || 1,
+            '--qm-factor': schoolInfo.questionMarginFactor || 1,
             pageBreakInside: 'avoid'
           } as React.CSSProperties}
         >

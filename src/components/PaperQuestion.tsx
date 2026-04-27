@@ -15,7 +15,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en', paperFor
   if (q.type === 'section') {
     const section = q as SectionHeader;
     return (
-      <div className="mt-8 mb-4 border-b-2 border-slate-200 pb-2 break-inside-avoid print:break-inside-avoid">
+      <div className={`mt-8 mb-4 border-b-2 border-slate-200 pb-2 break-inside-avoid print:break-inside-avoid ${paperFormat === 'A5' ? 'print:break-inside-avoid-page' : ''}`}>
         <h3 className="text-[1.125em] font-bold uppercase text-slate-900">{section.text}</h3>
         {section.instructions && (
           <p className="text-[0.9em] text-slate-700 italic mt-1">{section.instructions}</p>
@@ -50,7 +50,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en', paperFor
   }
 
   return (
-    <div className={`mb-6 relative break-inside-avoid print:break-inside-avoid`}>
+    <div className={`mb-6 relative break-inside-avoid print:break-inside-avoid ${paperFormat === 'A5' ? 'print:break-inside-avoid-page' : ''}`}>
       <div className="flex justify-between items-start mb-2">
         <pre className="font-semibold text-[1em] text-slate-900 flex-1 whitespace-pre-wrap font-sans">
           {currentNum && `${formatNumber(currentNum, language)}.`} {q.text || <span className="text-slate-400 italic font-normal">{langConf.emptyQuestion}</span>}
@@ -63,7 +63,7 @@ export default function PaperQuestion({ q, currentNum, language = 'en', paperFor
       {q.itemCount && q.itemCount > 1 && q.subItems ? (
         <div className="mt-4 space-y-4 ml-5">
           {q.subItems.map((sub, idx) => (
-            <div key={sub.id} className="mb-3 break-inside-avoid print:break-inside-avoid">
+            <div key={sub.id} className={`mb-3 break-inside-avoid print:break-inside-avoid ${paperFormat === 'A5' ? 'print:break-inside-avoid-page' : ''}`}>
               <div className="flex justify-between items-start">
                 <pre className="text-[0.95em] text-slate-800 mb-2 whitespace-pre-wrap font-sans">
                   <span className="font-medium mr-2">{formatListLetter(idx, language)})</span>
