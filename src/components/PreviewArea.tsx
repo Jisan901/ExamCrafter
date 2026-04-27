@@ -23,15 +23,18 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
           @media print {
             @page { size: A4 landscape; margin: 0; }
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; }
-            .preview-container { box-shadow: none !important; }
+            .preview-container { box-shadow: none !important; min-height: auto !important; }
           }
         `}} />
       ) : (
         <style dangerouslySetInnerHTML={{__html: `
           @media print {
-            @page { size: A4 portrait; margin: ${15 * (schoolInfo.paperPaddingFactor || 1)}mm; }
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .preview-container { padding: 0 !important; max-width: none !important; box-shadow: none !important; }
+            @page { 
+              size: A4 portrait; 
+              margin: ${15 * (schoolInfo.paperMarginTopFactor ?? schoolInfo.paperPaddingFactor ?? 1)}mm ${15 * (schoolInfo.paperPaddingFactor || 1)}mm ${15 * (schoolInfo.paperPaddingFactor || 1)}mm ${15 * (schoolInfo.paperPaddingFactor || 1)}mm;
+            }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; }
+            .preview-container { padding: 0 !important; max-width: none !important; box-shadow: none !important; min-height: auto !important; }
           }
         `}} />
       )}
