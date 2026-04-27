@@ -45,6 +45,7 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
         style={{ 
           fontSize: isA5 ? `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)` : `${(schoolInfo.fontSizeFactor || 1)}rem`,
           padding: isA5 ? `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})` : `calc(2.5rem * ${schoolInfo.paperPaddingFactor || 1})`,
+          paddingTop: `calc(${isA5 ? '10mm' : '2.5rem'} * ${schoolInfo.paperMarginTopFactor ?? schoolInfo.paperPaddingFactor ?? 1})`,
           '--fw-factor': schoolInfo.fontWeightFactor || 1,
           '--sp-factor': schoolInfo.spacingFactor || 1,
           '--qm-factor': schoolInfo.questionMarginFactor || 1
@@ -87,6 +88,7 @@ export default function PreviewArea({ schoolInfo, questions, totalPoints, handle
           style={{ 
             fontSize: `calc(${(schoolInfo.fontSizeFactor || 1)}rem * 0.707)`,
             padding: `calc(10mm * ${schoolInfo.paperPaddingFactor || 1})`,
+            paddingTop: `calc(10mm * ${schoolInfo.paperMarginTopFactor ?? schoolInfo.paperPaddingFactor ?? 1})`,
             '--fw-factor': schoolInfo.fontWeightFactor || 1,
             '--sp-factor': schoolInfo.spacingFactor || 1,
             '--qm-factor': schoolInfo.questionMarginFactor || 1,

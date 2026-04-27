@@ -230,6 +230,26 @@ export default function SettingsTab({ schoolInfo, setSchoolInfo }: SettingsTabPr
           <span>Large (3.0x)</span>
         </div>
       </div>
+      <div>
+        <label className="flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <span>Margin Top (Factor)</span>
+          <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{schoolInfo.paperMarginTopFactor ?? 1}x</span>
+        </label>
+        <input
+          type="range"
+          min="0.0"
+          max="5.0"
+          step="0.1"
+          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          value={schoolInfo.paperMarginTopFactor ?? 1}
+          onChange={(e) => setSchoolInfo({ ...schoolInfo, paperMarginTopFactor: parseFloat(e.target.value) })}
+        />
+        <div className="flex justify-between text-[0.65rem] text-slate-400 mt-1 font-medium">
+          <span>None (0x)</span>
+          <span>Normal (1x)</span>
+          <span>Huge (5.0x)</span>
+        </div>
+      </div>
     </div>
   );
 }
